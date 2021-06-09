@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+ 
+<html lang="es">
+ 
+<head>
+  <title id="titulo">Sala de Reuniones</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="css/estilos.css" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/32x32.png"/>
+  <script type="text/javascript" src="js/time.js"></script>
+  <script type="text/javascript" src="js/getroominfo.js"></script>
+  <script type="text/javascript" src="js/obtp.js"></script>
+  <script type="text/javascript" src="js/inventory.js"></script>
+  <script type="text/javascript" language="javascript">
+
+	//Cada cuantos milisegundos se actualiza el listado de reuniones
+	const timeToUpdate = 300000
+
+	//ID de la sala obtenido del script corriendo en local
+	var room_id = undefined
+	var botonera = false
+	var interval_roomInfo = undefined
+  
+	// Envia señal de apago al script corriendo localmente
+	function PowerOff() {
+		if (confirm('Vas a apagar la sala de reuniones. �Estas seguro?')) 
+		{
+		fetch('http://127.0.0.1:8080/poweroff', {method: 'get'})
+		} 
+	}
+		
+	//Envia el cambio de fuente a SmartView al script corriento localmente
+	function smartView() {
+		if (confirm('Vas a activar Smart View para compartir la pantalla del telefono movil. �Estas seguro?')) 
+		{
+		fetch('http://127.0.0.1:8080/SmartView', {method: 'get'})
+		} 
+	}
+	
+	//Obtiene los Query de la URL
+	const urlParams = new URLSearchParams(window.location.search);
+
+  	
+	//Cambia las imagenes del fondo
+	function changeImage() { 
+		var BackgroundImg = ["./backgrounds/img1.jpg", "./backgrounds/img2.jpg", "./backgrounds/img3.jpg", "./backgrounds/img4.jpg", "./backgrounds/img5.jpg", "./backgrounds/img6.jpg", "./backgrounds/img7.jpg", "./backgrounds/img8.jpg"];
+		var i = Math.floor((Math.random() * 8));
+		document.getElementById("backImg").src = BackgroundImg[i];
+	}
+
+	// Modifica la visbilidad del boton de apagado dependiendo de si la sala es con botonera o sin botonera
+	function showButtonOff(){
+		console.log(botonera)
+		if (botonera == true){
+			document.getElementById("buttonOff").style.visibility="hidden";
+		}
+	}
+
+	window.onload = function () {
+		interval_roomInfo = setInterval(function() {
+			getRoomInfo()
+		}, 5000);
+		setTimeout(showButtonOff, 300)
+		getCam()
+		setInterval(function() {
+			get_meetings()
+		}, timeToUpdate);
+		setInterval(function() {
+			changeImage()
+		}, 25000);
+		startTime();
+	}
+
+</script>
+</head> 
+<body>
+	<div id="recuadro1"></div>
+	<div id="cajaReuniones-1">
+		<p id="Texto1CajaReuniones"></p>
+		<p id="Texto1CajaReuniones1"></p>
+	</div>
+	<div id="recuadro2"></div>
+	<div id="cajaReuniones-2">
+		<p id="Texto2CajaReuniones"></p>
+		<p id="Texto2CajaReuniones2"></p>
+	</div>
+	<div id="recuadro3"></div>
+	<div id="cajaReuniones-3">
+		<p id="Texto3CajaReuniones"></p>
+		<p id="Texto3CajaReuniones3"></p>
+	</div>
+	<div id ="wallpaper" class="cycle-slideshow">
+		<img id="backImg" src="./backgrounds/img1.jpg"/>
+	</div>
+	<p id="hora">00:00</p>
+	<p id="sala">
+		<img src="img/location.png">
+		<span id="nombreSala">Sala de Reuniones</span>
+	</p>
+	<!--Recuadro con los botones-->
+	<span id="recuadro"></span>
+	<!--Titulo del recuadro-->
+	<p id="textoRecuadro">COLABORACIÓN</p>
+	<!--Boton Webex-->
+	<span id="button1" >
+		<a href="https://bbva.webex.com" target="_blank">
+			<img src="img/webex_button.png" onmouseover="this.src='img/webex_button_over.png'" onmouseout="this.src='img/webex_button.png'"/>
+		</a>
+		<p>Webex</p>
+	</span>
+	<!--Boton Meets-->
+	<span id="button2" >
+		<a  href="https://meet.google.com/?pli=1&authuser=0" target="_blank">
+			<img src="img/Gmeet_button.png" onmouseover="this.src='img/Gmeet_button_over.png'" onmouseout="this.src='img/Gmeet_button.png'"/>
+		</a>
+		<p>Google Meets</p>
+	</span>
+	<!--Boton Google-->
+	<span id="button4" >
+		<a href="https://www.google.es" target="_blank">
+			<img src="img/google_button.png" onmouseover="this.src='img/google_button_over.png'" onmouseout="this.src='img/google_button.png'"/>
+		</a>
+		<p>Google</p>
+	</span>
+	<!--Boton Intranet-->
+	<span id="button3">
+		<a href="https://bbva-intranet.appspot.com" target="_blank">
+			<img src="img/bbva_button.png" onmouseover="this.src='img/bbva_button_over.png'" onmouseout="this.src='img/bbva_button.png'"/>
+		</a>
+		<p>BBVA intranet</p>
+	</span>
+	<!--Boton Apagar-->
+	<span id="buttonOff" >
+		<a>
+			<img src="img/poweroff_button.png" onmouseover="this.src='img/poweroff_button_over.png'" onmouseout="this.src='img/poweroff_button.png'" onclick="PowerOff();"/>
+		</a>
+		<p>Apagar</p>
+	</span>
+	<!--IP del ordenador abajo a la izq-->
+	<p id="ip">IP: </p>
+</body>
+
+</html>
