@@ -21,6 +21,9 @@ function getRoomInfo(){
           clearInterval(interval_roomInfo)
           get_meetings()
           post_data_inventory(data)
+          setInterval(function(){
+            handshake(data.host)
+          },60000,data)
         })
       }
 

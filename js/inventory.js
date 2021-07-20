@@ -1,4 +1,5 @@
 function post_data_inventory(data){
+    //fetch('http:127.0.0.1:8000/rooms', {
     fetch('https://api.avserver.ddnsfree.com/inventory/rooms/', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -14,4 +15,11 @@ function post_data_inventory(data){
     ).catch(function(err) {
     console.log('Fetch Error :-S', err);
     });
+}
+
+function handshake(hostname){
+    fetch('https://api.avserver.ddnsfree.com/inventory/rooms/lastconnection?hostname=' + hostname, {
+        method: 'put',
+        headers: {'Content-Type': 'application/json'},
+    })
 }
